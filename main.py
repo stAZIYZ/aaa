@@ -17,17 +17,12 @@ CHAT_ID = os.getenv("CHAT_ID")
 client = TelegramClient(StringSession(STRING_SESSION), API_ID, API_HASH)
 
 channels = {
-    # -1001337701474: -1001956847541,  # Inline
-    -1002460046152: -1001694845676,  # Futbolishee
-    -1002289943516: -1002093057889, # ermak
-}
-
-channel_comments = {
     # -1001337701474: ["Zo'r", "Ha", "Uzmobile effekt"],
-    -1002460046152: ["Ha", "Zo'r", "g'a"],
+    -1002460046152: ["Ha", "Zo'r", "...", "Uzmobile effekt"],  # futbolishee
+    -1002289943516: ["Ha", "Zo'r", "...", "Uzmobile effekt"],  # ermak
+    # -1002331884910: ["Zo'r", "Ha", "Uzmobile effekt", "Efuzpage nomr 1"], #efuzpage
+    # -1001974475685: ["Uzmobile effekt", "Ha", "Zo'r"] #efootball
 }
-
-auto_replies = ["Haa", "Zo'r", "Nmo'lyapti", "Bilasizmi bazilar meni post kutib o'tiradi deb o'ylarkan"]
 
 
 async def send_to_bot(message):
@@ -39,94 +34,49 @@ async def send_to_bot(message):
                 print(f"⚠️ Botga xabar yuborishda xatolik: {resp.status}")
 
 
-async def main():
-    await client.start()
-    print("✅ Userbot Railway'da ishga tushdi!")
-    await send_to_bot("✅ Userbot Railway'da ishga tushdi!")
-
-
 @client.on(events.NewMessage(chats=list(channels.keys())))
 async def handler(event):
     try:
         if event.is_channel:
             channel_id = event.chat_id
-            linked_chat_id = channels.get(channel_id)
-
             entity = await client.get_entity(channel_id)
             channel_name = entity.title
 
-            message = f"✅ Yangi post topildi! Kanal: {channel_name} (ID: {channel_id}), Post ID: {event.id}"
-            print(message)
-            await send_to_bot(message)
+            comment = random.choice(channels.get(channel_id, ["Ajoyib kanal ekan! 😊"]))
+            await event.reply(comment)
 
-            messages = await client.get_messages(linked_chat_id, limit=10)
-
-            for msg in messages:
-                if msg.forward and msg.forward.original_fwd and msg.forward.original_fwd.channel_post == event.id:
-                    comment = random.choice(channel_comments.get(channel_id, ["Ajoyib kanal ekan! 😊"]))
-
-                    await asyncio.gather(
-                        client.send_message(linked_chat_id, comment, reply_to=msg.id),
-                        send_to_bot(f"💬 Sharh yuborildi!: {comment}")
-                    )
-                    return
-
-            await send_to_bot("⛔️ Guruhda mos post topilmadi!")
+            log_message = f"✅ Yangi post topildi! Kanal: {channel_name} (ID: {channel_id}), Post ID: {event.id}\n💬 Sharh yozildi: {comment}"
+            print(log_message)
+            await send_to_bot(log_message)
 
     except Exception as e:
-        await send_to_bot(f"⚠️ Xatolik: {e}")
+        error_message = f"⚠️ Xatolik: {e}"
+        print(error_message)
+        await send_to_bot(error_message)
 
 
-# @client.on(events.NewMessage(chats=list(channels.values()), incoming=True))
-# async def auto_reply(event):
-#     try:
-#         self_id = (await client.get_me()).id  # Userbot ID
-#
-#         if event.is_reply and event.reply_to_msg_id:
-#             original_message = await event.get_reply_message()
-#
-#             if original_message and original_message.sender_id == self_id:
-#                 user_reply_text = event.text.lower()
-#
-#                 if "salom" in user_reply_text:
-#                     reply_message = "Salom!"
-#                 elif "qanday" in user_reply_text:
-#                     reply_message = "Yaxshi!"
-#                 elif "kim" in user_reply_text:
-#                     reply_message = "Men avtomatlashtirilgan userbotman! 🤖"
-#                 elif "bot" in user_reply_text:
-#                     reply_message = "Men avtomatlashtirilgan userbotman! 🤖"
-#                 elif "gay" in user_reply_text:
-#                     reply_message = "Yo'q. Men avtomatlashtirilgan userbotman! 🤖"
-#                 elif "kot" in user_reply_text:
-#                     reply_message = "Yoq o'zizsiz. Men avtomatlashtirilgan userbotman! 🤖"
-#                 elif "kut" in user_reply_text:
-#                     reply_message = "Yoq o'zizsiz. Men avtomatlashtirilgan userbotman! 🤖"
-#                 elif "ko't" in user_reply_text:
-#                     reply_message = "Yoq o'zizsiz. Men avtomatlashtirilgan userbotman! 🤖"
-#                 elif "kut" in user_reply_text:
-#                     reply_message = "Yoq o'zizsiz. Men avtomatlashtirilgan userbotman! 🤖"
-#                 else:
-#                     reply_message = random.choice(auto_replies)
-#
-#                 await event.reply(reply_message)
-#                 print(f"🔄 Auto-reply yuborildi: {reply_message}")
-#                 await send_to_bot(f"🔄 Auto-reply yuborildi: {reply_message}")
-#
-#     except Exception as e:
-#         print(f"⚠️ Xatolik (auto-reply): {e}")
-#
+@client.on(events.NewMessage(incoming=True))
+async def auto_reply(event):
+    try:
+        if event.is_private:
+            welcome_message = "Assalomu alaykum! Men dasturchilar tomonidan avtomatlashtirilgan userbotman."
+            await event.reply(welcome_message)
 
-# @client.on(events.NewMessage(incoming=True))
-# async def private_reply(event):
-#     try:
-#         if event.is_private:
-#             welcome_message = "Assalomu alaykum! Men dasturchilar tomonidan avtomatlashtirilgan userbotman."
-#             await event.reply(welcome_message)
-#             await send_to_bot(f"💬 Foydalanuvchiga javob yuborildi: {welcome_message}")
-#
-#     except Exception as e:
-#         print(f"⚠️ Xatolik (private-reply): {e}")
+            log_message = f"💬 Foydalanuvchiga javob yuborildi: {welcome_message}"
+            print(log_message)
+            await send_to_bot(log_message)
+
+    except Exception as e:
+        error_message = f"⚠️ Xatolik (private-reply): {e}"
+        print(error_message)
+        await send_to_bot(error_message)
+
+
+async def main():
+    await client.start()
+    start_message = "✅ Userbot Railway'da ishga tushdi!"
+    print(start_message)
+    await send_to_bot(start_message)
 
 
 with client:
