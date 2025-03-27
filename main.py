@@ -19,6 +19,7 @@ client = TelegramClient(StringSession(STRING_SESSION), API_ID, API_HASH)
 channels = {
     # -1001337701474: -1001956847541,  # Inline
     -1002460046152: -1001694845676,  # Futbolishee
+    -1002289943516: -1002093057889, # ermak
 }
 
 channel_comments = {
