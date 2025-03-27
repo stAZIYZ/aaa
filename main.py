@@ -116,16 +116,16 @@ async def handler(event):
 #         print(f"⚠️ Xatolik (auto-reply): {e}")
 #
 
-@client.on(events.NewMessage(incoming=True))
-async def private_reply(event):
-    try:
-        if event.is_private:
-            welcome_message = "Assalomu alaykum! Men dasturchilar tomonidan avtomatlashtirilgan userbotman."
-            await event.reply(welcome_message)
-            await send_to_bot(f"💬 Foydalanuvchiga javob yuborildi: {welcome_message}")
-
-    except Exception as e:
-        print(f"⚠️ Xatolik (private-reply): {e}")
+# @client.on(events.NewMessage(incoming=True))
+# async def private_reply(event):
+#     try:
+#         if event.is_private:
+#             welcome_message = "Assalomu alaykum! Men dasturchilar tomonidan avtomatlashtirilgan userbotman."
+#             await event.reply(welcome_message)
+#             await send_to_bot(f"💬 Foydalanuvchiga javob yuborildi: {welcome_message}")
+#
+#     except Exception as e:
+#         print(f"⚠️ Xatolik (private-reply): {e}")
 
 
 with client:
