@@ -17,11 +17,12 @@ CHAT_ID = os.getenv("CHAT_ID")
 client = TelegramClient(StringSession(STRING_SESSION), API_ID, API_HASH)
 
 channels = {
-    # -1001337701474: ["Zo'r", "Ha", "Uzmobile effekt"],
-    -1002460046152: ["Ha", "Zo'r", "...", "Uzmobile effekt"],  # futbolishee
-    -1002289943516: ["Ha", "Zo'r", "...", "Uzmobile effekt"],  # ermak
-    # -1002331884910: ["Zo'r", "Ha", "Uzmobile effekt", "Efuzpage nomr 1"], #efuzpage
-    # -1001974475685: ["Uzmobile effekt", "Ha", "Zo'r"] #efootball
+    # -1001337701474: ["Zo'r", "Ha", "Uzmobile effekt"],  # Inline
+    -1002460046152: ["Ha", "Zo'r", "...", "ha yaxshi"],  # Futbolishee
+    # -1002421347022: ["Zo'r", "Ha", "Uzmobile effekt"],  # bekorchi
+    # -1002331884910: ["Zo'r", "Ha", "Uzmobile effekt", "Efuzpage nomr 1"],  # efuzpage
+    # -1001974475685: ["Uzmobile effekt", "Ha", "Zo'r"]  # efootball
+    -1002289943516: ["Zo'r", "Ha", ]
 }
 
 
@@ -37,17 +38,21 @@ async def send_to_bot(message):
 @client.on(events.NewMessage(chats=list(channels.keys())))
 async def handler(event):
     try:
-        if event.is_channel:
-            channel_id = event.chat_id
-            entity = await client.get_entity(channel_id)
-            channel_name = entity.title
+        channel_id = event.chat_id
+        entity = await client.get_entity(channel_id)
+        channel_name = entity.title
 
-            comment = random.choice(channels.get(channel_id, ["Ajoyib kanal ekan! 😊"]))
-            await event.reply(comment)
+        comment = random.choice(channels[channel_id])
 
-            log_message = f"✅ Yangi post topildi! Kanal: {channel_name} (ID: {channel_id}), Post ID: {event.id}\n💬 Sharh yozildi: {comment}"
-            print(log_message)
-            await send_to_bot(log_message)
+        await client.send_message(
+            entity=channel_id,
+            message=comment,
+            comment_to=event.id
+        )
+
+        log_message = f"✅ Yangi post topildi! Kanal: {channel_name} (ID: {channel_id}), Post ID: {event.id}\n💬 Sharh yozildi: {comment}"
+        print(log_message)
+        await send_to_bot(log_message)
 
     except Exception as e:
         error_message = f"⚠️ Xatolik: {e}"
