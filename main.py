@@ -17,10 +17,10 @@ CHAT_ID = os.getenv("CHAT_ID")
 client = TelegramClient(StringSession(STRING_SESSION), API_ID, API_HASH)
 
 channels = {
-    # -1001337701474: ["Zo'r", "Ha", "Uzmobile effekt"],  # Inline
+     -1001337701474: ["Zo'r", "Ha", "Ucell effekt, Ha yaxshi"],  # Inline
     -1002460046152: ["Ha", "Zo'r", "...", "ha yaxshi"],  # Futbolishee
     -1001171062015: ["Zo'r", "Ha", "Uzmobile effekt"],  # aslam
-    # -1002331884910: ["Zo'r", "Ha", "Uzmobile effekt", "Efuzpage nomr 1"],  # efuzpage
+     # -1002331884910: ["Zo'r", "Ha", "Uzmobile effekt", "Efuzpage nomr 1"],  # efuzpage
     # -1001974475685: ["Uzmobile effekt", "Ha", "Zo'r"]  # efootball
     -1002310558356: ["Zo'r", "Ha", ]
 }
